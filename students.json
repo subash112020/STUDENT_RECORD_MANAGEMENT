@@ -1,0 +1,92 @@
+[
+    {
+        "id": 101,
+        "name": "subash",
+        "age": 13,
+        "department": "CLASS 6",
+        "marks": {
+            "English": 90,
+            "Tamil": 90,
+            "Maths": 100,
+            "Science": 90,
+            "Social": 80
+        },
+        "average": 90.0,
+        "grade": "O"
+    },
+    {
+        "id": 102,
+        "name": "azhan",
+        "age": 13,
+        "department": "5",
+        "marks": {
+            "English": 80,
+            "Tamil": 80,
+            "Maths": 80,
+            "Science": 82,
+            "Social": 75
+        },
+        "average": 79.4,
+        "grade": "B"
+    },
+    {
+        "id": 103,
+        "name": "mohan",
+        "age": 7,
+        "department": "3",
+        "marks": {
+            "English": 90,
+            "Tamil": 95,
+            "Maths": 85,
+            "Science": 65,
+            "Social": 75
+        },
+        "average": 82.0,
+        "grade": "A"
+    },
+    {
+        "id": 104,
+        "name": "ram",
+        "age": 12,
+        "department": "CLASS 6",
+        "marks": {
+            "English": 90,
+            "Tamil": 85,
+            "Maths": 75,
+            "Science": 85,
+            "Social": 100
+        },
+        "average": 87.0,
+        "grade": "A"
+    },
+    {
+        "id": 105,
+        "name": "azhan",
+        "age": 20,
+        "department": "CLASS 12",
+        "marks": {
+            "English": 70,
+            "Tamil": 70,
+            "Maths": 65,
+            "Science": 70,
+            "Social": 70
+        },
+        "average": 69.0,
+        "grade": "C"
+    },
+    {
+        "id": 106,
+        "name": "mohan",
+        "age": 12,
+        "department": "CLASS 10",
+        "marks": {
+            "English": 95,
+            "Tamil": 95,
+            "Maths": 100,
+            "Science": 100,
+            "Social": 99.5
+        },
+        "average": 97.9,
+        "grade": "O"
+    }
+]

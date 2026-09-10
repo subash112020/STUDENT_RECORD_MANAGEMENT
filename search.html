@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Student - Student Record Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4e73df;
+            --secondary: #858796;
+            --success: #1cc88a;
+            --danger: #e74c3c;
+        }
+
+        body {
+            background-color: #f8f9fc;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, #224abe 100%);
+        }
+
+        .sidebar {
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar a {
+            color: #333;
+            text-decoration: none;
+            padding: 15px 20px;
+            display: block;
+            border-left: 4px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #f8f9fc;
+            border-left-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .sidebar a.active {
+            background-color: #e7f0ff;
+            border-left-color: var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .sidebar .section-title {
+            padding: 20px;
+            font-weight: bold;
+            color: var(--secondary);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-radius: 12px;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #224abe 100%);
+            color: white;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 20px;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 0;
+        }
+
+        .search-input {
+            font-size: 1.1rem;
+            padding: 15px 20px;
+            border: 2px solid #e3e6f0;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+        }
+
+        .btn-search {
+            background: linear-gradient(135deg, var(--primary) 0%, #224abe 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(78, 115, 223, 0.3);
+        }
+
+        .result-card {
+            background: white;
+            border: none;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            margin-top: 30px;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .result-header {
+            background: linear-gradient(135deg, var(--success) 0%, #17a589 100%);
+            color: white;
+            padding: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .result-body {
+            padding: 30px;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #e3e6f0;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .info-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .marks-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e3e6f0;
+        }
+
+        .marks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .mark-card {
+            background: #f8f9fc;
+            border: 2px solid #e3e6f0;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .mark-card:hover {
+            border-color: var(--primary);
+            background: #e7f0ff;
+        }
+
+        .mark-subject {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+
+        .mark-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .grade-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .grade-O {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .grade-A {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .grade-B {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .grade-C {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .grade-D {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .grade-F {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+
+        .no-result {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--secondary);
+        }
+
+        .no-result i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-edit {
+            background-color: #36b9cc;
+            color: white;
+        }
+
+        .btn-delete {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .spinner-small {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-left: 10px;
+        }
+
+        footer {
+            background: white;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #e3e6f0;
+            color: var(--secondary);
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">📚 Student Record Manager</a>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 sidebar p-0">
+                <div class="section-title">MENU</div>
+                <a href="/">🏠 Dashboard</a>
+                <a href="/students-page">👥 View Students</a>
+                <a href="/add-page">➕ Add Student</a>
+                <a href="/search-page" class="active">🔍 Search Student</a>
+                <a href="/analytics-page">📊 Analytics</a>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="margin: 0;">🔍 Search Student</h3>
+                    </div>
+                    <div class="card-body">
+                        <!-- Search Container -->
+                        <div class="search-container">
+                            <div class="input-group">
+                                <input type="number" class="form-control search-input" id="searchId" 
+                                       placeholder="Enter Student ID..." required>
+                                <button class="btn-search" onclick="searchStudent()">
+                                    🔍 Search
+                                    <div class="spinner-border spinner-small" id="searchSpinner" 
+                                         role="status" style="display: none;">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </button>
+                            </div>
+                            <small class="text-muted d-block mt-2">Enter the student's ID to find their records</small>
+                        </div>
+
+                        <!-- Search Result -->
+                        <div id="resultContainer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Student</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="deleteMessage"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Student Record Manager. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let currentStudent = null;
+
+        // Allow Enter key to search
+        document.getElementById('searchId').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') searchStudent();
+        });
+
+        // Search student
+        async function searchStudent() {
+            const id = document.getElementById('searchId').value.trim();
+
+            if (!id) {
+                alert('Please enter a student ID');
+                return;
+            }
+
+            const spinner = document.getElementById('searchSpinner');
+            spinner.style.display = 'inline-block';
+
+            try {
+                const response = await fetch(`/api/students/${id}`);
+                const result = await response.json();
+
+                spinner.style.display = 'none';
+                const container = document.getElementById('resultContainer');
+
+                if (result.success && result.data) {
+                    currentStudent = result.data;
+                    displayStudent(result.data);
+                } else {
+                    container.innerHTML = `
+                        <div class="no-result">
+                            <div>😕</div>
+                            <h5>No student found</h5>
+                            <p>Student with ID ${id} does not exist in the system</p>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                spinner.style.display = 'none';
+                alert('Error searching student: ' + error.message);
+            }
+        }
+
+        // Display student details
+        function displayStudent(student) {
+            const marks = student.marks;
+            const gradeClass = `grade-${student.grade}`;
+
+            const html = `
+                <div class="result-card">
+                    <div class="result-header">
+                        ✓ Student Found: ${student.name}
+                    </div>
+                    <div class="result-body">
+                        <div class="info-row">
+                            <span class="info-label">Student ID:</span>
+                            <span class="info-value">${student.id}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Age:</span>
+                            <span class="info-value">${student.age} years</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Class:</span>
+                            <span class="info-value">${student.department}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Overall Average:</span>
+                            <span class="info-value" style="font-size: 1.2rem; color: var(--primary);">
+                                ${student.average.toFixed(2)}
+                            </span>
+                        </div>
+
+                        <div class="marks-section">
+                            <h6>📊 Subject-wise Marks:</h6>
+                            <div class="marks-grid">
+                                <div class="mark-card">
+                                    <div class="mark-subject">📚 English</div>
+                                    <div class="mark-value">${marks.English.toFixed(1)}</div>
+                                </div>
+                                <div class="mark-card">
+                                    <div class="mark-subject">🌏 Tamil</div>
+                                    <div class="mark-value">${marks.Tamil.toFixed(1)}</div>
+                                </div>
+                                <div class="mark-card">
+                                    <div class="mark-subject">📐 Maths</div>
+                                    <div class="mark-value">${marks.Maths.toFixed(1)}</div>
+                                </div>
+                                <div class="mark-card">
+                                    <div class="mark-subject">🔬 Science</div>
+                                    <div class="mark-value">${marks.Science.toFixed(1)}</div>
+                                </div>
+                                <div class="mark-card">
+                                    <div class="mark-subject">🌍 Social</div>
+                                    <div class="mark-value">${marks.Social.toFixed(1)}</div>
+                                </div>
+                            </div>
+                            <div style="text-align: center;">
+                                <span class="grade-badge ${gradeClass}">Grade: ${student.grade}</span>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn-action btn-edit" onclick="editStudent(${student.id})">✏️ Edit</button>
+                            <button class="btn-action btn-delete" onclick="deleteStudentModal(${student.id}, '${student.name}')">🗑️ Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('resultContainer').innerHTML = html;
+        }
+
+        // Edit student
+        function editStudent(id) {
+            window.location.href = `/update-page?id=${encodeURIComponent(id)}`;
+        }
+
+        // Delete modal
+        function deleteStudentModal(id, name) {
+            document.getElementById('deleteMessage').textContent = 
+                `Are you sure you want to delete ${name}?`;
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+
+        let deleteId = null;
+
+        function deleteStudentModal(id, name) {
+            deleteId = id;
+            document.getElementById('deleteMessage').textContent = 
+                `Are you sure you want to delete ${name}?`;
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+
+        async function confirmDelete() {
+            if (!deleteId) return;
+
+            try {
+                const response = await fetch(`/api/students/${deleteId}`, {
+                    method: 'DELETE'
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+                    document.getElementById('resultContainer').innerHTML = `
+                        <div class="no-result">
+                            <div>✓</div>
+                            <h5>Student deleted successfully</h5>
+                            <p>The student record has been removed from the system</p>
+                        </div>
+                    `;
+                    document.getElementById('searchId').value = '';
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                alert('Error deleting student: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

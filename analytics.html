@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - Student Record Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #4e73df;
+            --secondary: #858796;
+            --success: #1cc88a;
+            --danger: #e74c3c;
+            --warning: #f8b739;
+        }
+
+        body {
+            background-color: #f8f9fc;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, #224abe 100%);
+        }
+
+        .sidebar {
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar a {
+            color: #333;
+            text-decoration: none;
+            padding: 15px 20px;
+            display: block;
+            border-left: 4px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #f8f9fc;
+            border-left-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .sidebar a.active {
+            background-color: #e7f0ff;
+            border-left-color: var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .sidebar .section-title {
+            padding: 20px;
+            font-weight: bold;
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary) 0%, #224abe 100%);
+            color: white;
+            border-radius: 12px 12px 0 0 !important;
+            padding: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .stat-label {
+            color: var(--secondary);
+            margin-top: 10px;
+            font-size: 0.95rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 400px;
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .table-responsive {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        table {
+            margin-bottom: 0;
+        }
+
+        tbody tr:hover {
+            background-color: #f8f9fc;
+        }
+
+        .badge-custom {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .badge-A {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .badge-O {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .badge-B {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .badge-C {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .badge-D {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .badge-F {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        footer {
+            background: white;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #e3e6f0;
+            color: var(--secondary);
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">📚 Student Record Manager</a>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 sidebar p-0">
+                <div class="section-title">MENU</div>
+                <a href="/">🏠 Dashboard</a>
+                <a href="/students-page">👥 View Students</a>
+                <a href="/add-page">➕ Add Student</a>
+                <a href="/search-page">🔍 Search Student</a>
+                <a href="/analytics-page" class="active">📊 Analytics</a>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 content">
+                <div id="loadingContainer" class="loading">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+
+                <div id="analyticsContainer" style="display: none;">
+                    <!-- Title -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 style="margin: 0;">📊 Class Analytics & Statistics</h3>
+                        </div>
+                    </div>
+
+                    <!-- Key Metrics -->
+                    <div class="grid-4">
+                        <div class="stat-card">
+                            <div class="stat-value" id="totalStudents">0</div>
+                            <div class="stat-label">Total Students</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="classAverage">0%</div>
+                            <div class="stat-label">School Average</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="highestScore">0</div>
+                            <div class="stat-label">Highest Score</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="lowestScore">0</div>
+                            <div class="stat-label">Lowest Score</div>
+                        </div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="grid-2">
+                        <!-- Subject Performance -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 style="margin: 0;">Subject Performance</h5>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="subjectChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Grade Distribution -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 style="margin: 0;">Grade Distribution</h5>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="gradeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Class Performance -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 style="margin: 0;">Class Performance</h5>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="departmentChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Subject Averages Table -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 style="margin: 0;">Subject-wise Averages</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Subject</th>
+                                            <th>Average Score</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="subjectTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Top Performers -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 style="margin: 0;">🏆 Top Performers</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Rank</th>
+                                            <th>Student Name</th>
+                                            <th>ID</th>
+                                            <th>Class</th>
+                                            <th>Average</th>
+                                            <th>Grade</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="topPerformersBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Class Statistics -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 style="margin: 0;">Class Statistics</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Class</th>
+                                            <th>Student Count</th>
+                                            <th>Average Score</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="departmentTableBody">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Student Record Manager. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let charts = {};
+
+        // Load analytics data
+        async function loadAnalytics() {
+            try {
+                const [statsRes, topRes] = await Promise.all([
+                    fetch('/api/statistics'),
+                    fetch('/api/top-performers?limit=10')
+                ]);
+
+                const statsResult = await statsRes.json();
+                const topResult = await topRes.json();
+
+                document.getElementById('loadingContainer').style.display = 'none';
+                document.getElementById('analyticsContainer').style.display = 'block';
+
+                if (statsResult.success && statsResult.data) {
+                    displayAnalytics(statsResult.data, topResult.data);
+                }
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+                document.getElementById('loadingContainer').innerHTML = '<p>Error loading analytics</p>';
+            }
+        }
+
+        // Display analytics
+        function displayAnalytics(stats, topStudents) {
+            // Update metrics
+            document.getElementById('totalStudents').textContent = stats.total_students;
+            document.getElementById('classAverage').textContent = stats.overall_average.toFixed(1) + '%';
+            
+            // Find highest and lowest
+            const subjects = Object.values(stats.subject_averages);
+            document.getElementById('highestScore').textContent = Math.max(...subjects).toFixed(1);
+            document.getElementById('lowestScore').textContent = Math.min(...subjects).toFixed(1);
+
+            // Subject averages table
+            const subjectTableBody = document.getElementById('subjectTableBody');
+            subjectTableBody.innerHTML = '';
+            Object.entries(stats.subject_averages).forEach(([subject, avg]) => {
+                const status = avg >= 80 ? '✓ Good' : avg >= 70 ? '◐ Average' : '✗ Need Improvement';
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${subject}</td>
+                    <td><strong>${avg.toFixed(2)}</strong></td>
+                    <td>${status}</td>
+                `;
+                subjectTableBody.appendChild(row);
+            });
+
+            // Top performers
+            const topPerformersBody = document.getElementById('topPerformersBody');
+            topPerformersBody.innerHTML = '';
+            topStudents.forEach((student, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${student.name}</td>
+                    <td>${student.id}</td>
+                    <td>${student.department}</td>
+                    <td><strong>${student.average.toFixed(2)}</strong></td>
+                    <td><span class="badge-custom badge-${student.grade}">Grade ${student.grade}</span></td>
+                `;
+                topPerformersBody.appendChild(row);
+            });
+
+            // Class statistics
+            const deptTableBody = document.getElementById('departmentTableBody');
+            deptTableBody.innerHTML = '';
+            const classAverages = stats.class_averages || Object.fromEntries(
+                Object.entries(stats.department_distribution).map(([dept, data]) => [dept, data.average])
+            );
+            Object.entries(classAverages).forEach(([dept, average]) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${dept}</strong></td>
+                    <td>${stats.department_distribution[dept].count}</td>
+                    <td>${average.toFixed(2)}</td>
+                `;
+                deptTableBody.appendChild(row);
+            });
+
+            // Create charts
+            createSubjectChart(stats.subject_averages);
+            createGradeChart(stats.grade_distribution);
+            createDepartmentChart(classAverages);
+        }
+
+        // Subject Chart
+        function createSubjectChart(subjectAverages) {
+            const ctx = document.getElementById('subjectChart').getContext('2d');
+            charts.subject = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(subjectAverages),
+                    datasets: [{
+                        label: 'Average Score',
+                        data: Object.values(subjectAverages),
+                        backgroundColor: [
+                            'rgba(78, 115, 223, 0.8)',
+                            'rgba(54, 185, 204, 0.8)',
+                            'rgba(28, 200, 138, 0.8)',
+                            'rgba(248, 183, 57, 0.8)',
+                            'rgba(231, 76, 60, 0.8)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+        }
+
+        // Grade Distribution Chart
+        function createGradeChart(gradeDistribution) {
+            const ctx = document.getElementById('gradeChart').getContext('2d');
+            charts.grade = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(gradeDistribution),
+                    datasets: [{
+                        data: Object.values(gradeDistribution),
+                        backgroundColor: [
+                            '#28a745', // A
+                            '#17a2b8', // B
+                            '#ffc107', // C
+                            '#fd7e14', // D
+                            '#6c757d'  // F
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        // Class chart
+        function createDepartmentChart(classAverages) {
+            const ctx = document.getElementById('departmentChart').getContext('2d');
+            charts.department = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(classAverages),
+                    datasets: [{
+                        label: 'Class Average',
+                        data: Object.values(classAverages),
+                        backgroundColor: 'rgba(78, 115, 223, 0.8)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+        }
+
+        // Load analytics on page load
+        loadAnalytics();
+
+        // Refresh every 30 seconds
+        setInterval(loadAnalytics, 30000);
+    </script>
+</body>
+</html>

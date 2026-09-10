@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Record Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4e73df;
+            --secondary: #858796;
+            --success: #1cc88a;
+            --danger: #e74c3c;
+            --warning: #f8b739;
+            --info: #36b9cc;
+        }
+
+        body {
+            background-color: #f8f9fc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, #224abe 100%);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        .sidebar {
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar a {
+            color: #333;
+            text-decoration: none;
+            padding: 15px 20px;
+            display: block;
+            border-left: 4px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #f8f9fc;
+            border-left-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .sidebar a.active {
+            background-color: #e7f0ff;
+            border-left-color: var(--primary);
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .sidebar .section-title {
+            padding: 20px;
+            font-weight: bold;
+            color: var(--secondary);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .card-stat {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card-stat:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .card-stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .card-stat-label {
+            color: var(--secondary);
+            font-size: 0.95rem;
+            margin-top: 10px;
+        }
+
+        .btn-custom {
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .btn-primary-custom {
+            background-color: var(--primary);
+            border: none;
+            color: white;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: #224abe;
+            color: white;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .quick-action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #e3e6f0;
+            background: white;
+        }
+
+        .quick-action-btn:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(78, 115, 223, 0.2);
+        }
+
+        .quick-action-btn i {
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+
+        .quick-action-btn p {
+            margin: 0;
+            font-weight: 500;
+            color: #333;
+        }
+
+        .alert-custom {
+            border-radius: 8px;
+            border: none;
+        }
+
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        footer {
+            background: white;
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #e3e6f0;
+            color: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">📚 Student Record Manager</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <span class="nav-link text-white">Server Ready ✓</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 sidebar p-0">
+                <div class="section-title">MENU</div>
+                <a href="/" class="active" onclick="setActive(this)">🏠 Dashboard</a>
+                <a href="/students-page" onclick="setActive(this)">👥 View Students</a>
+                <a href="/add-page" onclick="setActive(this)">➕ Add Student</a>
+                <a href="/search-page" onclick="setActive(this)">🔍 Search Student</a>
+                <a href="/analytics-page" onclick="setActive(this)">📊 Analytics</a>
+                
+                <div class="section-title">API</div>
+                <a href="javascript:void(0)" onclick="showApiHelp()">📡 API Documentation</a>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 content">
+                <!-- Welcome Section -->
+                <div class="alert alert-custom" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px;">
+                    <h2>Welcome to Student Record Manager</h2>
+                    <p>Manage student records efficiently with our web-based application</p>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="grid-4">
+                    <div class="card-stat" style="background: linear-gradient(135deg, rgba(78, 115, 223, 0.1), rgba(78, 115, 223, 0.05));">
+                        <div class="icon-box" style="background: rgba(78, 115, 223, 0.2);">👥</div>
+                        <div class="card-stat-value" id="total-students">0</div>
+                        <div class="card-stat-label">Total Students</div>
+                    </div>
+
+                    <div class="card-stat" style="background: linear-gradient(135deg, rgba(28, 200, 138, 0.1), rgba(28, 200, 138, 0.05));">
+                        <div class="icon-box" style="background: rgba(28, 200, 138, 0.2);">⭐</div>
+                        <div class="card-stat-value" id="overall-average">0%</div>
+                        <div class="card-stat-label">School Average</div>
+                    </div>
+
+                    <div class="card-stat" style="background: linear-gradient(135deg, rgba(54, 185, 204, 0.1), rgba(54, 185, 204, 0.05));">
+                        <div class="icon-box" style="background: rgba(54, 185, 204, 0.2);">🏆</div>
+                        <div class="card-stat-value" id="top-student">-</div>
+                        <div class="card-stat-label">Top Performer</div>
+                    </div>
+
+                </div>
+
+                <!-- Quick Actions -->
+                <h4 style="margin-top: 40px; margin-bottom: 20px;">Quick Actions</h4>
+                <div class="grid-4">
+                    <a href="/add-page" class="quick-action-btn">
+                        <i>➕</i>
+                        <p>Add New Student</p>
+                    </a>
+                    <a href="/students-page" class="quick-action-btn">
+                        <i>👥</i>
+                        <p>View All Students</p>
+                    </a>
+                    <a href="/search-page" class="quick-action-btn">
+                        <i>🔍</i>
+                        <p>Search Student</p>
+                    </a>
+                    <a href="/analytics-page" class="quick-action-btn">
+                        <i>📊</i>
+                        <p>View Analytics</p>
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Student Record Manager. All rights reserved.</p>
+    </footer>
+
+    <!-- Modal for API Documentation -->
+    <div class="modal fade" id="apiModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">API Documentation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <pre id="apiDocContent" style="background: #f8f9fc; padding: 15px; border-radius: 8px; overflow-x: auto;"></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Set active menu item
+        function setActive(elem) {
+            document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+            if (elem) elem.classList.add('active');
+        }
+
+        // Load statistics
+        async function loadStatistics() {
+            try {
+                const response = await fetch('/api/students');
+                const result = await response.json();
+
+                if (result.success && result.data) {
+                    document.getElementById('total-students').textContent = result.data.length;
+
+                    if (result.data.length > 0) {
+                        const avgAll = result.data.reduce((sum, s) => sum + s.average, 0) / result.data.length;
+                        document.getElementById('overall-average').textContent = avgAll.toFixed(1) + '%';
+
+                        const topStudent = result.data.reduce((top, student) =>
+                            student.average > top.average ? student : top
+                        );
+                        document.getElementById('top-student').textContent = topStudent.name.split(' ')[0];
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading statistics:', error);
+            }
+        }
+
+        // Show API documentation
+        function showApiHelp() {
+            const apiDoc = `
+BASE URL: http://localhost:5000
+
+ENDPOINTS:
+
+1. GET /api/students
+   Description: Get all students
+   Response: { success: true, message: "", data: [...] }
+
+2. GET /api/students/<id>
+   Description: Get specific student by ID
+   Example: GET /api/students/101
+   Response: { success: true, message: "", data: {...} }
+
+3. POST /api/students
+   Description: Add new student
+   Headers: Content-Type: application/json
+   Body: {
+     "id": 101,
+     "name": "John Doe",
+     "age": 18,
+     "department": "CS",
+     "marks": {
+       "English": 85,
+       "Tamil": 78,
+       "Maths": 92,
+       "Science": 88,
+       "Social": 80
+     }
+   }
+
+4. PUT /api/students/<id>
+   Description: Update student
+   Headers: Content-Type: application/json
+   Body: { "name": "New Name", "marks": {...} }
+
+5. DELETE /api/students/<id>
+   Description: Delete student
+   Example: DELETE /api/students/101
+
+6. GET /api/department/<class>
+    Description: Get students by class
+    Example: GET /api/department/CLASS%2010
+
+7. GET /api/top-performers?limit=5
+   Description: Get top performers
+   Parameters: limit (optional, default: 5)
+
+8. GET /api/statistics
+   Description: Get class statistics
+   Response includes: overall_average, subject_averages, grade_distribution, etc.
+            `;
+            document.getElementById('apiDocContent').textContent = apiDoc;
+            new bootstrap.Modal(document.getElementById('apiModal')).show();
+        }
+
+        // Load statistics on page load
+        loadStatistics();
+        setInterval(loadStatistics, 5000);
+    </script>
+</body>
+</html>
