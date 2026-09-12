@@ -1,0 +1,126 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f6fa;
+}
+
+.app {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar */
+
+.sidebar {
+    width: 240px;
+    background: #1e293b;
+    padding: 25px 15px;
+}
+
+.sidebar h2 {
+    color: white;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.sidebar button {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 10px;
+    border: none;
+    background: transparent;
+    color: white;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.sidebar button:hover {
+    background: #334155;
+}
+
+/* Main content */
+
+.main-content {
+    flex: 1;
+    padding: 40px;
+}
+
+.main-content h1 {
+    margin-bottom: 30px;
+}
+
+.main-content h2 {
+    margin-bottom: 20px;
+    color: #1e293b;
+}
+
+.dashboard-summary {
+    max-width: 620px;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    padding: 13px 0;
+    border-bottom: 1px solid #dbe2ea;
+}
+
+.summary-label {
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.summary-item strong {
+    color: #0f172a;
+    font-size: 1.1rem;
+}
+
+.spending-status {
+    margin-top: 24px;
+    padding: 12px 0;
+    font-weight: 600;
+}
+
+.spending-status.success {
+    color: #1e293b;
+}
+
+.spending-status.warning {
+    color: #1e293b;
+}
+
+.table-container {
+    overflow-x: auto;
+    margin-top: 20px;
+}
+
+.expense-table {
+    width: 100%;
+    min-width: 560px;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.expense-table th,
+.expense-table td {
+    padding: 13px 12px;
+    border-bottom: 1px solid #dbe2ea;
+    text-align: left;
+}
+
+.expense-table th {
+    color: #1e293b;
+    font-weight: 600;
+    padding-top: 0;
+}
+
+.expense-table tbody tr:hover {
+    background: #f8fafc;
+}

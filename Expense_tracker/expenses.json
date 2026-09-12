@@ -1,0 +1,20 @@
+[
+    {
+        "date": "2026-09-11",
+        "name": "food",
+        "amount": 400.0,
+        "category": "food"
+    },
+    {
+        "date": "2026-09-11",
+        "name": "movie",
+        "amount": 250.0,
+        "category": "entertainment"
+    },
+    {
+        "date": "2026-09-11",
+        "name": "football",
+        "category": "playing",
+        "amount": 200.0
+    }
+]
