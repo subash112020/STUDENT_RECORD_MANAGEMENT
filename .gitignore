@@ -1,0 +1,8 @@
+API_REFERENCE.md
+SERVER_SETUP_GUIDE.md
+.venv/
+__pycache__/
+*.pyc
+credentials.json
+token.pickle
+token.json

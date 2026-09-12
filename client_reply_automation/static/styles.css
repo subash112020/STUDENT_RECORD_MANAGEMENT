@@ -1,0 +1,52 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f8;
+    margin: 0;
+    padding: 40px;
+}
+
+.container {
+    max-width: 800px;
+    margin: auto;
+}
+
+h1 {
+    text-align: center;
+}
+
+.subtitle {
+    text-align: center;
+    color: #666;
+}
+
+.status-card,
+.reply-box {
+    background: white;
+    padding: 25px;
+    margin-top: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.connected {
+    color: green;
+    font-weight: bold;
+}
+
+button {
+    padding: 12px 20px;
+    margin: 20px 10px 0 0;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.open-email {
+    display: inline-block;
+    padding: 12px 20px;
+    margin-top: 8px;
+    border-radius: 6px;
+    background: #1a73e8;
+    color: white;
+    text-decoration: none;
+}
